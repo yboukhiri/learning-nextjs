@@ -34,32 +34,32 @@ export type State = {
 export async function createInvoice(prevState: State, formData: FormData) {
   throw new Error('Failed to Create Invoice');
   // Validate form fields using Zod
-  const validatedFields = CreateInvoice.safeParse({
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  });
+  // const validatedFields = CreateInvoice.safeParse({
+  //   customerId: formData.get('customerId'),
+  //   amount: formData.get('amount'),
+  //   status: formData.get('status'),
+  // });
 
-  // If form validation fails, return errors early. Otherwise, continue.
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Invoice.',
-    };
-  }
-  const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
-  const date = new Date().toISOString().split('T')[0];
-  try {
-    await sql`
-      INSERT INTO invoices (customer_id, amount, status, date)
-      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-    `;
-  } catch (error) {
-    return {
-      message: 'Database Error: Failed to Create Invoice.',
-    };
-  }
+  // // If form validation fails, return errors early. Otherwise, continue.
+  // // if (!validatedFields.success) {
+  // //   return {
+  // //     errors: validatedFields.error.flatten().fieldErrors,
+  // //     message: 'Missing Fields. Failed to Create Invoice.',
+  // //   };
+  // // }
+  // const { customerId, amount, status } = validatedFields.data;
+  // const amountInCents = amount * 100;
+  // const date = new Date().toISOString().split('T')[0];
+  // try {
+  //   await sql`
+  //     INSERT INTO invoices (customer_id, amount, status, date)
+  //     VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+  //   `;
+  // } catch (error) {
+  //   return {
+  //     message: 'Database Error: Failed to Create Invoice.',
+  //   };
+  // }
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }
